@@ -25,8 +25,8 @@ public class PagamentoDAO {
                 Pagamento pagamento = new Pagamento(rs.getInt("codPagamento"),
                         rs.getFloat("valorTotal"),
                         rs.getBoolean("status"),
-                        rs.getString("codigoBarra"),
-                        rs.getString("tipoPagamento"));
+                        rs.getString("tipoPagamento"),
+                        rs.getString("codigoBarra"));
                 //colocar chave estrangeria na classe e null na criaçao aqui em cima
                 //curso.setMatriculaProfessorCoordenador(rs.getInt("professorCoordenador")); exemplo do marco
                 pagamentos.add(pagamento);
@@ -39,12 +39,12 @@ public class PagamentoDAO {
         }
         return pagamentos;
     }
-    
-     public static void gravar(Pagamento pagamento) throws SQLException, ClassNotFoundException {
+
+    public static void gravar(Pagamento pagamento) throws SQLException, ClassNotFoundException {
         Connection conexao = null;
         try {
             conexao = BD.getConexao();
-            String sql = "insert into pagamento(codPagamento, valorTotal, status, tipoPagamento, codigoBarra)"                    
+            String sql = "insert into pagamento(codPagamento, valorTotal, status, tipoPagamento, codigoBarra)"
                     + "values (?,?,?,?,?)";
             PreparedStatement comando = conexao.prepareStatement(sql);
             comando.setInt(1, pagamento.getCodPagamento());
@@ -54,46 +54,37 @@ public class PagamentoDAO {
             comando.setString(5, pagamento.getCodigoBarra());
             comando.execute();
             comando.close();
-            conexao.close(); 
-            
-               
+            conexao.close();
 
-            
-            
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw e;
         }
     }
-     
-     public static void alterar(Pagamento pagamento) throws SQLException, ClassNotFoundException {
+
+    public static void alterar(Pagamento pagamento) throws SQLException, ClassNotFoundException {
         Connection conexao = null;
         try {
             conexao = BD.getConexao();
             String sql = "update pagamento set valorTotal = ?, status = ?, codigoBarra = ?, tipoPagamento =?  where codPagamento = ?";
-                    
+
             PreparedStatement comando = conexao.prepareStatement(sql);
             comando.setInt(5, pagamento.getCodPagamento());
             comando.setFloat(1, pagamento.getValorTotal());
             comando.setBoolean(2, pagamento.isStatus());
             comando.setString(3, pagamento.getCodigoBarra());
             comando.setString(4, pagamento.getTipoPagamento());
-            
-            
-            
+
             comando.execute();
-            
+
             comando.close();
             conexao.close();
-            
-            
-            
-        }catch(SQLException e){
+
+        } catch (SQLException e) {
             throw e;
         }
     }
-     
-     
-     public static void excluir(Pagamento pagamento) throws SQLException, ClassNotFoundException {
+
+    public static void excluir(Pagamento pagamento) throws SQLException, ClassNotFoundException {
         Connection conexao = null;
         Statement comando = null;
         String stringSQL;
@@ -108,59 +99,49 @@ public class PagamentoDAO {
             fecharConexao(conexao, comando);
         }
     }
-     
-     public static Pagamento obterPagamento(int codPagamento) throws ClassNotFoundException{
+
+    public static Pagamento obterPagamento(int codPagamento) throws ClassNotFoundException {
         Connection conexao = null;
         Statement comando = null;
         Pagamento pagamento = null;
-        
-        try{
+
+        try {
             conexao = BD.getConexao();
             comando = conexao.createStatement();
-            ResultSet rs= comando.executeQuery(
+            ResultSet rs = comando.executeQuery(
                     "select * from pagamento where codPagamento = " + codPagamento);
             rs.first();
             pagamento = new Pagamento(rs.getInt("codPagamento"),
-                        rs.getFloat("valorTotal"),
-                        rs.getBoolean("status"),
-                        rs.getString("tipoPagamento"),
-                        rs.getString("codigoBarra"));
-            
-            
-            
-        }catch(SQLException e){
+                    rs.getFloat("valorTotal"),
+                    rs.getBoolean("status"),
+                    rs.getString("tipoPagamento"),
+                    rs.getString("codigoBarra"));
+
+        } catch (SQLException e) {
             e.printStackTrace();
-        }finally{
-            fecharConexao(conexao,comando);
+        } finally {
+            fecharConexao(conexao, comando);
         }
         return pagamento;
     }
-     
-     
+
     public static void alterarStatus(int codigoBarra) throws SQLException, ClassNotFoundException {
         Connection conexao = null;
         try {
             conexao = BD.getConexao();
             String sql = "update pagamento set status = true where codigoBarra = " + codigoBarra;
-                    
+
             PreparedStatement comando = conexao.prepareStatement(sql);
-            
-            
-            
-            
+
             comando.execute();
-            
+
             comando.close();
             conexao.close();
-            
-            
-            
-        }catch(SQLException e){
+
+        } catch (SQLException e) {
             throw e;
         }
-    } 
-    
-     
+    }
 
     public static void fecharConexao(Connection conexao, Statement comando) {
         try {

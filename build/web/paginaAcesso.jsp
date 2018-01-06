@@ -128,7 +128,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3 mt-4" <c:if test="${tipoLogin == 'organizador'}"> hidden </c:if>>
+                <div class="col-sm-6 col-md-4 col-lg-3 mt-4" <c:if test="${tipoLogin != 'administrador'}"> hidden </c:if>>
                         <div class="card">
                             <div class="card-block">
                                 <h5 class="text-bold">Inscricao</h5>

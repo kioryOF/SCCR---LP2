@@ -228,7 +228,8 @@ public class Inscricao {
             throws ClassNotFoundException {
         return InscricaoDAO.obterInscricaoKit(codInscricao, codEvento);
     }
-    public static Inscricao obterInscricaoPagamento (int codPagamento)
+
+    public static Inscricao obterInscricaoPagamento(int codPagamento)
             throws ClassNotFoundException {
         return InscricaoDAO.obterInscricaoPagamento(codPagamento);
     }
@@ -247,9 +248,9 @@ public class Inscricao {
 
     public Float calcularValorTotal(int codKit, int codEvento) throws ClassNotFoundException, SQLException {
         float preco;
-        Kit kit = Kit.obterKit(codKit, codEvento);
-        Lote lote = Lote.obterLote(1, codEvento);
-        preco = kit.getPreco() + lote.getValor();
+        Kit kitPreco = Kit.obterKit(codKit, codEvento);
+        Lote lote = Lote.obterLote(1, codEvento);//Improvisei o 1, falta pegar a data atualizada do computador e comparar com a do lote
+        preco = kitPreco.getPreco() + lote.getValor();
         return preco;
     }
 }

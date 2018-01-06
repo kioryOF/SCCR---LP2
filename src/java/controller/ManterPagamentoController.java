@@ -219,9 +219,9 @@ public class ManterPagamentoController extends HttpServlet {
         try {
             String tipoLogin = request.getParameter("tipoLogin");
             request.setAttribute("tipoLogin", tipoLogin);
-
+           
             Pagamento.alterarStatus(codigoBarra);
-            RequestDispatcher view = request.getRequestDispatcher("/confirmarPagamento.jsp");
+            RequestDispatcher view = request.getRequestDispatcher("/PesquisaPagamentoController.jsp");
             view.forward(request, response);
 
         } catch (IOException ex) {

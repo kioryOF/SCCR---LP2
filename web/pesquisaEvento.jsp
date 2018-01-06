@@ -56,7 +56,10 @@
                                 <a class="btn btn-warning"<c:if test="${tipoLogin!='atleta'}"> href="ManterEventoController?acao=prepararEditar&tipoLogin=${tipoLogin}&codEvento={{evento.codEvento}}&codEndereco={{evento.codEndereco}}"</c:if>/>Editar</a>
                             </div>  <div style="float: center" <c:if test="${tipoLogin!='administrador'}">hidden</c:if>>  
                                 <a class="btn btn-danger"<c:if test="${tipoLogin!='atleta'}"> href="ManterEventoController?acao=prepararExcluir&tipoLogin=${tipoLogin}&codEvento={{evento.codEvento}}&codEndereco={{evento.codEndereco}}"</c:if>/>Excluir</a>
-                                </div>                            
+                                </div>
+                                <div <c:if test="${tipoLogin!='atleta'}">hidden</c:if>>  
+                                <a class="btn btn-outline-success" href="ManterInscricaoController?acao=prepararIncluirViaEvento&tipoLogin=${tipoLogin}&codEvento={{evento.codEvento}}"/>Inscrever</a>
+                                </div>
                             </td>
 
                         </tr>

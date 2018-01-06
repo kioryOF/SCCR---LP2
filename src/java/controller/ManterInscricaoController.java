@@ -46,6 +46,14 @@ public class ManterInscricaoController extends HttpServlet {
                                 } else {
                                     if (acao.equals("confirmarRetiradaKit")) {
                                         confirmarRetiradaKit(request, response);
+                                    } else {
+                                        if (acao.equals("prepararIncluirViaEvento")) {
+                                            prepararIncluirViaEvento(request, response);
+                                        } else {
+                                            if (acao.equals("confirmarIncluirViaEvento")) {
+                                                confirmarIncluirViaEvento(request, response);
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -118,7 +126,7 @@ public class ManterInscricaoController extends HttpServlet {
             inscricao.setCodChip(codChip);
             inscricao.setPrecoTotal(inscricao.calcularValorTotal(codKit, codEvento));
             pagamento.setValorTotal(inscricao.getPrecoTotal());
-            
+
             pagamento.gravar();
             inscricao.gravar();
 
@@ -170,7 +178,7 @@ public class ManterInscricaoController extends HttpServlet {
 
         int codChip = Integer.parseInt(request.getParameter("optChip"));
         int codAtleta = Integer.parseInt(request.getParameter("optAtleta"));
-String dadosPercurso = request.getParameter("optPercurso");
+        String dadosPercurso = request.getParameter("optPercurso");
         String[] parts = dadosPercurso.split("|");
         int codPercurso = Integer.parseInt(parts[0]);
         int codKit = Integer.parseInt(request.getParameter("optKit"));
@@ -317,6 +325,83 @@ String dadosPercurso = request.getParameter("optPercurso");
                 view.forward(request, response);
             }
 
+        } catch (IOException ex) {
+        } catch (SQLException ex) {
+        } catch (ClassNotFoundException ex) {
+        } catch (ServletException ex) {
+        }
+    }
+
+    public void prepararIncluirViaEvento(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException {
+        try {
+            request.setAttribute("operacao", "Incluir");
+
+            request.setAttribute("atletas", Atleta.obterAtletas());
+            request.setAttribute("chips", Chip.obterChips());
+
+            String tipoLogin = request.getParameter("tipoLogin");
+            request.setAttribute("tipoLogin", tipoLogin);
+            int codEvento = Integer.parseInt(request.getParameter("codEvento"));
+            Evento evento = Evento.obterEvento(codEvento);
+            request.setAttribute("evento", evento);
+            request.setAttribute("percursos", evento.getListaPercursos());
+            request.setAttribute("kits", evento.getListaKits());
+
+            RequestDispatcher view = request.getRequestDispatcher("/manterInscricaoViaEvento.jsp");
+            view.forward(request, response);
+        } catch (ServletException ex) {
+
+        } catch (IOException ex) {
+
+        }
+        /*catch (ClassNotFoundException ex){
+            
+         }*/
+    }
+
+    public void confirmarIncluirViaEvento(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException {
+
+        int codInscricao = Integer.parseInt(request.getParameter("txtCodInscricao"));
+
+        int numeroPeito = Integer.parseInt(request.getParameter("txtNumeroPeito"));
+        String tamCamisa = request.getParameter("txtTamanhoCamisa");
+        Boolean statusRetirada = Boolean.parseBoolean(request.getParameter("txtTamanhoCamisa"));
+
+        int codChip = Integer.parseInt(request.getParameter("optChip"));
+        int codAtleta = Integer.parseInt(request.getParameter("optAtleta"));
+        int codEvento = Integer.parseInt(request.getParameter("txtCodEvento"));
+        int codPercurso = Integer.parseInt(request.getParameter("optPercurso"));
+        int codKit = Integer.parseInt(request.getParameter("optKit"));
+        int codPagamento = Integer.parseInt(request.getParameter("txtCodPagamento"));
+        String codigoBarras = "" + codPagamento + codPagamento + codPagamento;
+
+        try {
+            Atleta atleta = Atleta.obterAtleta(codAtleta);
+
+            Percurso percurso = Percurso.obterPercurso(codPercurso, codEvento);
+            Kit kit = Kit.obterKit(codKit, codEvento);
+            Chip chip = Chip.obterChip(codChip);
+            Pagamento pagamento = new Pagamento(codPagamento, codigoBarras);
+            Inscricao inscricao = new Inscricao(codInscricao, statusRetirada, tamCamisa, numeroPeito, chip, atleta, percurso, pagamento, kit, tamCamisa);
+
+            inscricao.setCodAtleta(codAtleta);
+            inscricao.setCodKit(codKit);
+            inscricao.setCodEventoKit(codEvento);
+            inscricao.setCodPercurso(codPercurso);
+            inscricao.setCodPagamento(codPagamento);
+            inscricao.setCodPercursoEvento(codEvento);
+            inscricao.setCodChip(codChip);
+            inscricao.setPrecoTotal(inscricao.calcularValorTotal(codKit, codEvento));
+            pagamento.setValorTotal(inscricao.getPrecoTotal());
+
+            pagamento.gravar();
+            inscricao.gravar();
+
+            String tipoLogin = request.getParameter("tipoLogin");
+            request.setAttribute("tipoLogin", tipoLogin);
+
+            RequestDispatcher view = request.getRequestDispatcher("ManterPagamentoController?acao=prepararEditar&codPagamento=" + codPagamento + "&tipoLogin=" + tipoLogin);
+            view.forward(request, response);
         } catch (IOException ex) {
         } catch (SQLException ex) {
         } catch (ClassNotFoundException ex) {

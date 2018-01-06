@@ -10,6 +10,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Evento;
+import modelo.Kit;
+import modelo.Percurso;
 
 public class EventoDAO {
 
@@ -164,6 +166,24 @@ public class EventoDAO {
 
             evento.setCodEndereco(rs.getInt("endereco_codEndereco"));
             evento.setCodOrganizador(rs.getInt("organizador_codOrganizador"));
+
+            rs = comando.executeQuery("select percurso.codPercurso from percurso,evento where codEvento= " + codEvento
+                    + "  AND percurso.evento_codEvento = evento.codEvento");
+            ArrayList<Percurso> percursos = new ArrayList<Percurso>();
+            while (rs.next()) {
+                Percurso percurso = Percurso.obterPercurso(rs.getInt("codPercurso"),codEvento);
+                percursos.add(percurso);
+            }
+            evento.setListaPercursos(percursos);
+
+            rs = comando.executeQuery("select kit.codKit from kit,evento where codEvento= " + codEvento
+                    + "  AND kit.evento_codEvento= evento.codEvento");
+            ArrayList<Kit> kits = new ArrayList<Kit>();
+            while (rs.next()) {
+                Kit kit = Kit.obterKit( rs.getInt("codKit"),codEvento);
+                kits.add(kit);
+            }
+            evento.setListaKits(kits);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
